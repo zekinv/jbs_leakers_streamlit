@@ -1,0 +1,54 @@
+# contact: zekinv@gmail.com
+
+version: "3.8"
+services:
+  leakers_app:v1.0:
+      image: leakers_app:v1.0:v1.0
+      container_name: leakers_app:v1.0
+      restart: always
+      environment:
+        #: Logger Levels: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+        LOGGER: DEBUG
+        URL_PAST_EVENTS: http://10.161.227.67:5001/analytics_event_summary
+        URL_RECENT_EVENTS: http://10.161.227.67:5001/video_dashboard_recent_events
+
+        # CAM1_URL = rtsp://jbs:jbsusa123!@10.161.243.210:554/snl/live/1/1
+        CAM1_URL: http://10.161.243.210/cgi-bin/video.cgi?User=CustomAuth&type=http&cameraID=1&Auth=amJzQFNOTF9DR0kgVG8gMTZCMDBEQDA4MTk3ZjNkYTZkYjIwODY2NjZiMTk3MGU2YzEwZjgzQC9jZ2ktYmluL3ZpZGVvLmNnaT9Vc2VyPUN1c3RvbUF1dGgmdHlwZT1odHRwJmNhbWVyYUlEPTEmbWpwZWdwbGF5PTFAYjBmZWIxNzRlOTQxYWU4MGRiMzgwODBiOWZhY2YwNjg=&mjpegplay=1
+        CAM2_URL: rtsp://admin:password@10.161.243.209:554/snl/live/1/1"
+      ports:
+        - "8500:8500"
+      # volumes:
+      #   - ./app/:/app/
+      networks:
+        - halcon_jbs
+
+    carcass_app:
+      build: .
+      image: carcass_app:v1.0
+      container_name: carcass_app
+      restart: always
+      environment:
+        #: Logger Levels: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+        LOGGER: DEBUG
+
+        URL_PAST_EVENTS : http://10.161.195.53:5001/analytics_event_summary
+        URL_RECENT_EVENTS : http://10.161.195.53:5001/video_dashboard_recent_events
+
+        CAM1_URL : http://root2:1234@10.161.210.101/mjpg/video.mjpg?camera=1
+        CAM2_URL : http://root2:1234@10.161.210.101/mjpg/video.mjpg?camera=2
+        CAM3_URL : http://root2:1234@10.161.210.101/mjpg/video.mjpg?camera=3
+        CAM4_URL : http://root2:1234@10.161.210.101/mjpg/video.mjpg?camera=4
+
+        CAM1_ID : 64d3430ac576366f9c6a697c
+        CAM2_ID : 64d20448c576366f9c6a6959
+        CAM3_ID : 64d21bbfc576366f9c6a695c
+        CAM4_ID : 6478eb0ab44c4f549c5efc59
+      ports:
+        - "8500:8500"
+      volumes:
+        - ./logs:/app/logs
+      networks:
+        - halcon_jbs
+networks:
+  halcon_jbs:
+    name: halcon_jbs
